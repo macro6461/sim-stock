@@ -2,6 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import FoodieReact from 'foodie-react'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -17,6 +18,11 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
+      <FoodieReact
+        GMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+        devPort={import.meta.env.VITE_PORT}
+        radius={5000}
+      />
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
