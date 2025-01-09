@@ -9,7 +9,7 @@ const port = process.env.VITE_PORT;
 // Use CORS middleware
 app.use(cors());
 
-app.get("/foodie/getAll", async (req, res) => {
+app.get("/api/fetchStockData", async (req, res) => {
   const { latitude, longitude, keyword, radius, key } = req.query;
   const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=restaurant&keyword=${encodeURIComponent(
     keyword
