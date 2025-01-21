@@ -1,7 +1,6 @@
-import { useAppSelector, useAppDispatch } from '../../store/hooks'
-import { getAvailableTickers, updateTickers, updateCapital } from '../../store/slices/paramsSlice';
+import {useAtomValue, useSetAtom} from 'jotai';
+import { updateTickers, updateCapital, fetchStockData, paramsAtom } from '../../store/atoms';
 import { Box, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField, Button, InputAdornment } from '@mui/material';
-import { fetchStockData } from '../../store/slices/stockSlice';
 
 const MenuProps = {
   PaperProps: {
@@ -12,20 +11,23 @@ const MenuProps = {
 };
 
 export default function Params() {
-  const availableTickers = useAppSelector((state) => state.params.availableTickers);
-  const selectedTickers = useAppSelector((state) => state.params.selectedTickers);
-  const capital = useAppSelector((state) => state.params.capital);
-  const dispatch = useAppDispatch();
+  const availableTickers = useAtomValue(paramsAtom).availableTickers
+  const selectedTickers = useAtomValue(paramsAtom).selectedTickers
+  const capital = useAtomValue(paramsAtom).capital
+
+  const setSelectedTickers = useSetAtom(updateTickers)
+  const setUpdatedCapital = useSetAtom(updateCapital)
+  const getStockData = useSetAtom(fetchStockData)
 
   const handleChange = (event: SelectChangeEvent<string[]>) => {
     const {
       target: { value },
     } = event;
-    dispatch(updateTickers(value as string[]));
+    setSelectedTickers(value as string[])
   };
 
   const handleSubmit = () => {
-    dispatch(fetchStockData({ tickers: selectedTickers, capital: capital }));
+    getStockData({tickers: selectedTickers, capital})
   }
 
   return (
@@ -69,7 +71,7 @@ export default function Params() {
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
           },
         }}
-        onChange={(e:any) => dispatch(updateCapital(e.target.value))}
+        onChange={(e:any) => setUpdatedCapital(e.target.value)}
       />
     </FormControl>
     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>

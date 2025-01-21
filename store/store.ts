@@ -1,14 +1,21 @@
-import { configureStore } from '@reduxjs/toolkit';
-import paramsReducer from './slices/paramsSlice';
-import stocksReducer from './slices/stockSlice';
-export const store = configureStore({
-  reducer: {
-    params: paramsReducer,
-    stocks: stocksReducer,
-    // Add your reducers here
-  },
-});
+import {createStore} from 'jotai';
+import {paramsAtom} from './atoms/paramsAtom';
+import {stocksAtom} from './atoms/stocksAtom';
+import { ParamsState, StocksState } from '../api/types';
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+const initialParamsState: ParamsState = {
+  availableTickers: ["APPL", "GOOGL", "MSFT", "AMZN", "META", "TSLA", "NVDA", "ADBE", "NFLX", "PYPL", "CRM", "INTC", "CSCO", "QCOM", "AMD", "ASML"],
+  selectedTickers: [],
+  capital: 0,
+};
+
+const initialStocksState: StocksState = {
+  loading: false,
+  stockData: [],
+  error: null
+};
+
+export const store = createStore()
+
+store.set(paramsAtom, initialParamsState)
+store.set(stocksAtom, initialStocksState)
