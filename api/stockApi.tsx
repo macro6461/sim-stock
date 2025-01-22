@@ -1,4 +1,4 @@
-import { StocksParams, StockData } from './types';
+import { StocksParams, StockData, StockAllocation, GetStockDataResponse } from './types';
 
 const calcRoisForIndividualSecurity = (res: StockData, capital: number) =>{
 
@@ -14,7 +14,7 @@ const sanitizeStock = (stock: any) =>{
 }
 
 export const stockApi = {
-  async getStockData({ tickers, capital }: StocksParams): Promise<StockData[]> {
+  async getStockData({ tickers, capital }: StocksParams): Promise<GetStockDataResponse> {
     try {
      // Make parallel requests for each ticker
      const promises = tickers.map(ticker => 
@@ -23,15 +23,17 @@ export const stockApi = {
         ).then(response => response.json())
       );
 
-      const results = await Promise.all(promises);
-      console.log("RES: ", results[0])
-      let defaultCapitalAlloc = parseFloat((capital / results.length).toFixed(2))
-      return results.map(result => {
+      let results = await Promise.all(promises);
+      let defaultCapitalAlloc = Math.round(capital / results.length)
+      let allocationObject: StockAllocation = {};
+      results = results.map(result => {
         let res = sanitizeStock(result['Global Quote']);
         res['alloc'] = defaultCapitalAlloc
-        console.log("CLEANED: ", res)
+        let id = res['symbol'];
+        allocationObject[id] = defaultCapitalAlloc
         return res
       })
+      return {results, allocationObject}
     } catch (error) {
       throw new Error('Failed to fetch stock data');
     }

@@ -1,10 +1,12 @@
 import {atom} from 'jotai';
-import { stockApi, StocksParams, StockData, StocksState, SimStockError} from '../../api';
+import { StockAllocation, stockApi, StocksParams, StocksState} from '../../api';
+import {getCurrentCapital} from './paramsAtom'
 
   
 export const stocksAtom = atom<StocksState>({
     loading: false,
     stockData: [],
+    allocationData: {},
     error: null,
 })
 
@@ -19,13 +21,14 @@ export const fetchStockData = atom(
         set(stocksAtom, (prev) => ({ ...prev, loading: true, error: null }));
   
         // Call the stockApi to fetch data
-        const stockData = await stockApi.getStockData(req);
+        const {results, allocationObject} = await stockApi.getStockData(req);
   
         // Update the state with the fetched data
         set(stocksAtom, (prev) => ({
           ...prev,
           loading: false,
-          stockData,
+          stockData: results,
+          allocationData: allocationObject,
           error: null,
         }));
       } catch (error: any) {
@@ -36,6 +39,32 @@ export const fetchStockData = atom(
           error: error.message || 'Failed to fetch stock data',
         }));
       }
+    }
+  );
+
+export const updateAllocation = atom(
+    null, // No read function, this is a write-only atom
+    (get, set, newAllocations: StockAllocation, total: number) => {
+        // Set loading to true before starting the API request
+        set(stocksAtom, (prev) => ({ ...prev, loading: true, error: null }));
+        let currentAlloc = {...get(stocksAtom).allocationData} as StockAllocation;
+        let defAllocCoef = Object.keys(currentAlloc).length - Object.keys(newAllocations).length
+        let cap = get(getCurrentCapital)
+        let remaining = cap - total
+        let defaultAlloc = remaining / defAllocCoef
+        for (const symbol in currentAlloc) {
+            if (newAllocations[symbol]){
+                currentAlloc[symbol] = newAllocations[symbol]
+            } else {
+                currentAlloc[symbol] = defaultAlloc
+            }
+        }
+        set(stocksAtom, (prev) => ({
+            ...prev,
+            allocationData: currentAlloc,
+            loading: false
+          }));
+          
     }
   );
 

@@ -12,6 +12,7 @@ const initialParamsState: ParamsState = {
 const initialStocksState: StocksState = {
   loading: false,
   stockData: [],
+  allocationData: {},
   error: null
 };
 

@@ -6,13 +6,23 @@ export interface ParamsState {
 
 export interface StocksState {
   loading: boolean;
-  stockData: StockData[]
+  stockData: StockData[];
   error: string | null;
+  allocationData: {};
 }
 
 export interface StocksParams {
   tickers: string[];
   capital: number;
+}
+
+export type StockAllocation = {
+  [key: string]: number;
+};
+
+export type GetStockDataResponse = {
+  results: StockData[];
+  allocationObject: StockAllocation;
 }
   
 export interface StockData {

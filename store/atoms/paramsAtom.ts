@@ -12,7 +12,14 @@ export const paramsAtom = atom<ParamsState>({
     capital: 0,
 })
 
-export const getAvailableTickers = atom((get)=> get(paramsAtom).availableTickers) 
+export const getAvailableTickers = atom((get)=> {
+    const params = get(paramsAtom)
+    return params.availableTickers;
+}) 
+export const getCurrentCapital = atom((get)=> {
+    const params = get(paramsAtom)
+    return params.capital;
+}) 
 export const updateTickers = atom(null, (_get, set, tickers: string[])=>{
     set(paramsAtom, (prev)=>({
         ...prev, 
@@ -26,4 +33,5 @@ export const updateCapital = atom(null, (_get, set, newCap: number)=>{
         capital: newCap
     }))
 })
+
   
