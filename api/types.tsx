@@ -20,6 +20,10 @@ export type StockAllocation = {
   [key: string]: number;
 };
 
+export type IsChanged = {
+  [key: string]: boolean;
+};
+
 export type GetStockDataResponse = {
   results: StockData[];
   allocationObject: StockAllocation;
@@ -48,4 +52,11 @@ export interface SimStockError {
   code: number;
   message: string;
   details?: string;
+}
+
+export interface AuthContextType {
+  isAuthenticated: boolean;
+  login: (token: string) => void;
+  logout: () => void;
+  authErr?: SimStockError | null;
 }
