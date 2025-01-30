@@ -52,3 +52,14 @@
   padding: 5px;
   cursor: pointer;
 }
+
+.googleAuthContainer {
+  margin: 10px;
+}
+
+/* override @react-oauth/google default style as props for alignment aren't working. */
+.googleAuthContainer > div > div {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+}

@@ -69,6 +69,33 @@ export const verifyToken = atom(
       }
     }
   );
+  
+  export const googleAuthLogin = atom(
+    null, // No read function, this is a write-only atom
+    async (_get, set, req: any) => {
+      try {
+        // Call the authApi to verify token
 
+        let {username, token} = await authApi.googleAuthLoginOrRegister(req);
+  
+        // Update the state with the fetched data
+        set(authAtom, (prev) => ({
+          ...prev,
+          username,
+          isLoggedIn: true,
+          error: null,
+        }));
+        return token;
+      } catch (error: any) {
+        // Handle errors and update the state accordingly
+        set(authAtom, (prev) => ({
+          ...prev,
+          isLoggedIn: false,
+          error: {code: error.code, message: error.message} as SimStockError  || 'Failed to verify token.',
+        }));
+        throw error;
+      }
+    }
+  );
 
   

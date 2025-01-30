@@ -2,7 +2,30 @@
 
 This file tracks released versions with the changes made to this project.
 
+## Version 1.0.5
+
+### Added
+
+- Added Google OAuth as a login using `'@react-oauth/google'`.
+- Added `googleAuthLogin` to the `authAtom.ts` atom.
+- Added `googleAuthLoginOrRegister` to manage the Google OAuth request to the backend in `authApi.tsx`.
+- Added `header` prop for form component.
+
+### Changed
+
+- Renamed `MyForm` to `LogInRegisterForm`.
+- Moved `LogInRegisterForm` into the `components/auth` directory.
+- Removed `Login` and `Register` components.
+
 ## Version 1.0.4
+
+### Added
+
+- Moved `loginOrRegister` API request into `authApi.tsx` and `authAtom.ts` and moved out of components.
+- Returning `username` when verifying JWT token and when logging in.
+- Improved error handling.
+
+## Version 1.0.3
 
 ### Added
 

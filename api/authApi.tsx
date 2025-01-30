@@ -29,6 +29,26 @@ export const authApi = {
             let err = extractError(error, "Unable to Log In.")
             throw err;
         }
+    },
+    async googleAuthLoginOrRegister(response: any){
+        console.log("Google login success:", response);
+        try {
+            const res = await fetch("http://localhost:1993/google-login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ token: response.credential }),
+              });
+          
+              const data = await res.json();
+              console.log("Backend response:", data);
+              return data;
+        } catch (error:any){
+            let err = extractError(error, "Unable to Sign In With Google.")
+            throw err;
+        }
+        
     }
 }
 

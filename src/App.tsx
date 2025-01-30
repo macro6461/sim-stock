@@ -3,11 +3,10 @@ import { AuthProvider } from './components/auth/AuthContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import Params from './components/Params'
 import StockList from './components/StockList'
-import Login from './components/Login'
 import Header from './components/Header'
-import Register from "./components/Register";
 import SavedSims from "./components/SavedSims";
 import './App.css'
+import LogInRegisterForm from "./components/auth/LogInRegisterForm";
 
 function App() {
 
@@ -15,8 +14,21 @@ function App() {
       <Router>
          <AuthProvider>
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={
+              <LogInRegisterForm 
+                header="Log In"
+                path="/register" 
+                linkText="Don't have an account? Register!" 
+                route="login" />
+            }/>
+            <Route 
+              path="/register" element={
+                <LogInRegisterForm 
+                  header="Register"
+                  path="/login" 
+                  linkText="Already have an account? Log In!" 
+                  route="register"/>
+            }/>
             <Route
               path="*"
               element={

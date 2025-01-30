@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import {useAtomValue, useSetAtom} from 'jotai';
+import {GoogleOAuthProvider} from '@react-oauth/google';
 import {Link} from 'react-router-dom'
-import { useAuth } from "./auth/AuthContext";
+import { useAuth } from "./AuthContext";
 import { FormControl, Input, FormLabel, Button } from "@mui/material";
-import { authAtom, loginOrRegister } from "../../store/atoms";
+import { authAtom, loginOrRegister } from "../../../store/atoms";
+import GoogleLoginComponent from './GoogleLoginComponent'
 
-interface MyFormProps {
+interface LoginRegisterFormProps {
     path: string;
     linkText: string;
     route: string;
+    header: string;
 }
 
-const MyForm: React.FC<MyFormProps> = ({ path, linkText, route }) => {
+const LoginRegisterForm: React.FC<LoginRegisterFormProps> = ({ path, linkText, route, header }) => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const { login } = useAuth(); 
   const authError = useAtomValue(authAtom).error
@@ -31,8 +34,11 @@ const MyForm: React.FC<MyFormProps> = ({ path, linkText, route }) => {
     }
   };
 
+  debugger
+
   return (
     <>
+    <h1>{header}</h1>
     <form onSubmit={handleSubmit}>
       <FormControl fullWidth margin="normal">
         <FormLabel htmlFor="username" required>Username</FormLabel>
@@ -51,9 +57,15 @@ const MyForm: React.FC<MyFormProps> = ({ path, linkText, route }) => {
       ? <p style={{color: 'red'}}>{authError.code}:{authError.message}</p>
       : null
     }
-    <Link to={path}>{linkText}</Link>
+    <br/>
+    <Link className="formRedirect" to={path}>{linkText}</Link>
+    <div className="googleAuthContainer">
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <GoogleLoginComponent/>
+      </GoogleOAuthProvider> 
+    </div>
     </>
   );
 };
 
-export default MyForm;
+export default LoginRegisterForm;
