@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import {useAtomValue, useSetAtom} from 'jotai';
 import {Link} from 'react-router-dom'
-import axios from "axios";
 import { useAuth } from "./auth/AuthContext";
 import { FormControl, Input, FormLabel, Button } from "@mui/material";
-import { authAtom } from "../../store/atoms";
+import { authAtom, loginOrRegister } from "../../store/atoms";
 
 interface MyFormProps {
     path: string;
@@ -16,22 +15,19 @@ const MyForm: React.FC<MyFormProps> = ({ path, linkText, route }) => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const { login } = useAuth(); 
   const authError = useAtomValue(authAtom).error
+  const logOrReg = useSetAtom(loginOrRegister)
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
-    debugger
     e.preventDefault();
     try {
-      const response = await axios.post(`http://localhost:1993/${route}`, formData);
-      localStorage.setItem("token", response.data.token)
-      login(response.data.token);
-    } catch (error: any) {
-        let code = error.code || error.response.data.code
-        let message = error.message || error.response.data.message
-        console.error(`${code}: `, `${message}`);
+      const data = await logOrReg({formData, route})
+      login(data);
+    } catch (err: any){
+      console.error(err)
     }
   };
 

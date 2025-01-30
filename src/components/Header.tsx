@@ -1,9 +1,11 @@
 import {useState} from 'react'
 import {Button, Icon, Menu, MenuItem, Modal} from '@mui/material'
+import {useAtomValue} from 'jotai';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from "react-router-dom";
 import { useAuth } from './auth/AuthContext';
+import { authAtom } from '../../store/atoms';
 
 const Header = () => {
 
@@ -11,6 +13,8 @@ const Header = () => {
     const [open, setOpen] = useState<boolean>(false)
     const [anchorEl, setAnchorEl] = useState(null)
     const [anchorElLogout, setAnchorElLogout] = useState(null)
+
+    const username = useAtomValue(authAtom).username
 
     const { logout } = useAuth(); 
 
@@ -31,6 +35,7 @@ const Header = () => {
     return (
         <div className="simStockMenu">
             <Link to="/simulate">SimStock</Link>
+            <p>Welcome, {username}!</p>
             <MenuIcon onClick={handleShowMenu} fontSize="large"/>
             <Menu
                     anchorEl={anchorEl}

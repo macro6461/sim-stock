@@ -19,13 +19,13 @@ export const verifyToken = atom(
         // Call the authApi to verify token
         let {token, callback} = req;
 
-        let res = await authApi.verifyToken(token, callback);
-        
-        debugger
+        let {user} = await authApi.verifyToken(token, callback);
+        let {username} = user
   
         // Update the state with the fetched data
         set(authAtom, (prev) => ({
           ...prev,
+          username,
           isLoggedIn: true,
           error: null,
         }));
@@ -39,7 +39,36 @@ export const verifyToken = atom(
       }
     }
   );
+  
+  export const loginOrRegister = atom(
+    null, // No read function, this is a write-only atom
+    async (_get, set, req: {formData: any, route: string}) => {
+      try {
+        // Call the authApi to verify token
 
+        let {formData, route} = req;
+
+        let {username, token} = await authApi.loginOrRegister(formData, route);
+  
+        // Update the state with the fetched data
+        set(authAtom, (prev) => ({
+          ...prev,
+          username,
+          isLoggedIn: true,
+          error: null,
+        }));
+        return token;
+      } catch (error: any) {
+        // Handle errors and update the state accordingly
+        set(authAtom, (prev) => ({
+          ...prev,
+          isLoggedIn: false,
+          error: {code: error.code, message: error.message} as SimStockError  || 'Failed to verify token.',
+        }));
+        throw error;
+      }
+    }
+  );
 
 
   
