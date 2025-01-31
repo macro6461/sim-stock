@@ -60,3 +60,9 @@ export interface AuthContextType {
   logout: () => void;
   authErr?: SimStockError | null;
 }
+
+export interface User {
+  id: string;
+  username?: string;
+  email: string;
+}

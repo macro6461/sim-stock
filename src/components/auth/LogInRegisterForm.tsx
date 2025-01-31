@@ -15,7 +15,7 @@ interface LoginRegisterFormProps {
 }
 
 const LoginRegisterForm: React.FC<LoginRegisterFormProps> = ({ path, linkText, route, header }) => {
-  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [formData, setFormData] = useState({ email: "", password: ""});
   const { login } = useAuth(); 
   const authError = useAtomValue(authAtom).error
   const logOrReg = useSetAtom(loginOrRegister)
@@ -32,17 +32,16 @@ const LoginRegisterForm: React.FC<LoginRegisterFormProps> = ({ path, linkText, r
     } catch (err: any){
       console.error(err)
     }
-  };
 
-  debugger
+  };
 
   return (
     <>
     <h1>{header}</h1>
     <form onSubmit={handleSubmit}>
       <FormControl fullWidth margin="normal">
-        <FormLabel htmlFor="username" required>Username</FormLabel>
-        <Input name="username" id="username" type="text" value={formData.username} onChange={handleChange}/>
+        <FormLabel htmlFor="email" required>Email</FormLabel>
+        <Input name="email" id="email" type="email" value={formData.email} onChange={handleChange}/>
       </FormControl>
 
       <FormControl fullWidth margin="normal">
@@ -54,7 +53,11 @@ const LoginRegisterForm: React.FC<LoginRegisterFormProps> = ({ path, linkText, r
       </Button>
     </form>
     {authError 
-      ? <p style={{color: 'red'}}>{authError.code}:{authError.message}</p>
+      ? <div className="errorContainer" >
+          <p><span>Code:</span> {authError.code}</p>
+          <p><span>Message:</span> {authError.message}</p>
+          {authError.details ? <p><span>Details:</span> {authError.details}</p> : null}
+        </div>
       : null
     }
     <br/>

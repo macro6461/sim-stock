@@ -8,10 +8,8 @@ const GoogleLoginComponent = () => {
     const { login } = useAuth(); 
 
     const validateLogin = async (response:any) => {
-        console.log("Google login success:", response);
         try {
             const data = await loginRegGoogle(response)
-            debugger
             login(data);
           } catch (err: any){
             console.error(err)
@@ -22,7 +20,7 @@ const GoogleLoginComponent = () => {
     <GoogleLogin
       onSuccess={(response) =>validateLogin(response)}
       onError={() => {
-        console.log('Login Failed');
+        console.log('Login/Registration Failed');
       }}
     />
   );

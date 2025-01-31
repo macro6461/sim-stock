@@ -26,7 +26,7 @@ export const authApi = {
             const response = await axios.post(`http://localhost:1993/${route}`, formData);
             return response.data
         } catch (error) {
-            let err = extractError(error, "Unable to Log In.")
+            let err = extractError(error, "Unable to Log In")
             throw err;
         }
     },
@@ -52,8 +52,10 @@ export const authApi = {
     }
 }
 
-const extractError = (error: any, details: string) => {
-    let code = error.code || error.response.data.code
-    let message = error.message || error.response.data.message
+const extractError = (error: any, title: string) => {
+    let code = error.code
+    code = `${title}: ${code}`
+    let message = error.message
+    let details = error.details || (error.response ? error.response.data.message : "N/A")
     return {code, message, details} as SimStockError; 
 }

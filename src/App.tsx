@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider } from './components/auth/AuthContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import Params from './components/Params'
@@ -7,6 +7,8 @@ import Header from './components/Header'
 import SavedSims from "./components/SavedSims";
 import './App.css'
 import LogInRegisterForm from "./components/auth/LogInRegisterForm";
+import ChatWindow from "./components/ChatWindow"
+import Profile from "./components/Profile";
 
 function App() {
 
@@ -36,8 +38,11 @@ function App() {
                   <>
                     <Header/>
                     <Routes>
+                      <Route path="/" element={<Navigate to="/simulate" replace />} />
+                      <Route path="/profile" element={<Profile/>} />
                       <Route path="/simulate" element={
                         <>
+                          <h1>Simulate</h1>
                           <Params />
                           <StockList />
                         </>
@@ -46,6 +51,7 @@ function App() {
                         <SavedSims />
                       }/>
                     </Routes>
+                    <ChatWindow/>
                   </>
                 </ProtectedRoute>
             }

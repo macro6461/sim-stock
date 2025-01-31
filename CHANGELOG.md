@@ -2,6 +2,14 @@
 
 This file tracks released versions with the changes made to this project.
 
+## Version 1.0.6
+
+### Added
+
+- `ChatWindow` to be used with WebSockets backend.
+- Added support for `email` in `User` instantion (deriving `username` from `email`).
+- Returning `user` object from backend instead of just `username`.
+
 ## Version 1.0.5
 
 ### Added

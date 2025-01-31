@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const handleSetAuth = (arg: boolean) => {
         setIsAuthenticated(arg)
         if (arg){
-            let url = location.pathname.indexOf("login") > -1 ? "simulate" : location.pathname
+            let url = location.pathname.indexOf("login") > -1 || location.pathname.indexOf("register") > -1 ? "simulate" : location.pathname
             navigate(url)
         } else {
             localStorage.removeItem("token");

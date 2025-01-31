@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import {Button, Icon, Menu, MenuItem, Modal} from '@mui/material'
+import {Button, Menu, MenuItem, Modal} from '@mui/material'
 import {useAtomValue} from 'jotai';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
@@ -14,7 +14,7 @@ const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null)
     const [anchorElLogout, setAnchorElLogout] = useState(null)
 
-    const username = useAtomValue(authAtom).username
+    const user = useAtomValue(authAtom).user
 
     const { logout } = useAuth(); 
 
@@ -35,7 +35,7 @@ const Header = () => {
     return (
         <div className="simStockMenu">
             <Link to="/simulate">SimStock</Link>
-            <p>Welcome, {username}!</p>
+            <p>Welcome, {user.username}!</p>
             <MenuIcon onClick={handleShowMenu} fontSize="large"/>
             <Menu
                     anchorEl={anchorEl}
@@ -54,6 +54,9 @@ const Header = () => {
             >
                 <MenuItem onClick={()=>setOpen(false)}>
                     <Link to="/simulate">Simulate</Link>
+                </MenuItem>
+                <MenuItem onClick={()=>setOpen(false)}>
+                    <Link to="/profile">Profile</Link>
                 </MenuItem>
                 <MenuItem onClick={()=>setOpen(false)}>
                     <Link to="/saved-sims">Saved Sims</Link>

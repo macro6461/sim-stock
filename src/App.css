@@ -63,3 +63,33 @@
       display: flex;
       justify-content: center;
 }
+
+.errorContainer{
+  margin-top: 10px;
+  color: red;
+  text-align: left;
+}
+
+.errorContainer p {
+  margin: 0;
+}
+
+.errorContainer p span{
+  font-weight: 1000;
+}
+
+.chatWindowContainer{
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+}
+
+.chatWindowContainer svg{
+  cursor: pointer;
+  transition: transform 0.5s;
+}
+
+.chatWindowContainer svg:hover{
+  transform: scale(1.5);
+  transition: transform 0.5s;
+}
