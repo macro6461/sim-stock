@@ -1,4 +1,4 @@
-import {useAtomValue, useSetAtom} from 'jotai';
+import {useAtomValue} from 'jotai';
 import { authAtom } from '../../store/atoms/';
 
 const Profile= () => {

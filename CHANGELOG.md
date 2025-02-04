@@ -2,6 +2,13 @@
 
 This file tracks released versions with the changes made to this project.
 
+## Version 1.0.7
+
+### Added
+
+- Incorporating Jest and React Testing Library to start building test suite for Sim Stock.
+- Added test squite for `ChatWindow.tsx`.
+
 ## Version 1.0.6
 
 ### Added
@@ -9,6 +16,7 @@ This file tracks released versions with the changes made to this project.
 - `ChatWindow` to be used with WebSockets backend.
 - Added support for `email` in `User` instantion (deriving `username` from `email`).
 - Returning `user` object from backend instead of just `username`.
+- Added JWT auth to registration.
 
 ## Version 1.0.5
 

@@ -3,5 +3,18 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "jsx": "react"
+  },
+  "include": [
+    "src/*",
+    "tests/*",
+    "hooks/*",
+    "store/*"
   ]
 }
