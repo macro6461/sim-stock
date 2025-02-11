@@ -71,7 +71,7 @@ export default function Params() {
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
           },
         }}
-        onChange={(e:any) => setUpdatedCapital(e.target.value)}
+        onChange={(e:any) => setUpdatedCapital(parseInt(e.target.value))}
       />
     </FormControl>
     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>

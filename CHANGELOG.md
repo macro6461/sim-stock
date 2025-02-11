@@ -2,12 +2,20 @@
 
 This file tracks released versions with the changes made to this project.
 
-## Version 1.0.7
+## Version 1.0.8
 
 ### Added
 
+- Implemented logic for calculating allocations and parsing stock data in `stockApi.ts`.
+- Built out more robust messaging and style for `ChatWindow.tsx`.
 - Incorporating Jest and React Testing Library to start building test suite for Sim Stock.
 - Added test squite for `ChatWindow.tsx`.
+- Added `MyStockData` class for instantiation in `types.ts`.
+
+### Fixed
+
+- Changed extension of api files from `.tsx` to `.ts` as they do not contain JSX.
+- Updated associated ts config files to permit `.ts` files as well as `.tsx` and include `/api`. 
 
 ## Version 1.0.6
 

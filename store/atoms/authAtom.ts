@@ -33,7 +33,7 @@ export const verifyToken = atom(
         set(authAtom, (prev) => ({
           ...prev,
           isLoggedIn: false,
-          error: {code: error.code, message: error.message} as SimStockError  || 'Failed to verify token.',
+          error: {code: error.code, message: error.message} as SimStockError,
         }));
       }
     }
@@ -59,12 +59,11 @@ export const verifyToken = atom(
         return token;
       } catch (error: any) {
         let {code, message, details} = error
-        debugger
         // Handle errors and update the state accordingly
         set(authAtom, (prev) => ({
           ...prev,
           isLoggedIn: false,
-          error: {code, message, details} as SimStockError  || 'Failed to Login/Register.',
+          error: {code, message, details} as SimStockError,
         }));
         throw error;
       }
@@ -94,7 +93,7 @@ export const verifyToken = atom(
         set(authAtom, (prev) => ({
           ...prev,
           isLoggedIn: false,
-          error: {code, message, details} as SimStockError  || 'Failed to Google Authenticate.',
+          error: {code, message, details} as SimStockError,
         }));
         throw error;
       }

@@ -22,5 +22,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "hooks", "store"]
+  "include": ["src", "hooks", "store", "api"]
 }

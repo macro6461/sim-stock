@@ -50,13 +50,15 @@ export const updateAllocation = atom(
         let currentAlloc = {...get(stocksAtom).allocationData} as StockAllocation;
         let defAllocCoef = Object.keys(currentAlloc).length - Object.keys(newAllocations).length
         let cap = get(getCurrentCapital)
-        let remaining = cap - total
-        let defaultAlloc = remaining / defAllocCoef
+        let remaining = 100 - total
+        let responsiveAlloc = remaining / defAllocCoef
         for (const symbol in currentAlloc) {
             if (newAllocations[symbol]){
-                currentAlloc[symbol] = newAllocations[symbol]
+              let dec = newAllocations[symbol].percent
+              currentAlloc[symbol] = {...newAllocations[symbol], cap: cap * dec}
             } else {
-                currentAlloc[symbol] = defaultAlloc
+              let dec = responsiveAlloc / 100
+              currentAlloc[symbol] = {percent: responsiveAlloc, cap: cap * dec}
             }
         }
         set(stocksAtom, (prev) => ({
