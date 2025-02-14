@@ -12,6 +12,8 @@ export const authAtom = atom<AuthState>({
     isLoggedIn: false,
 })
 
+export const isProUser = atom((get)=> get(authAtom).user.isPro) 
+
 export const verifyToken = atom(
     null, // No read function, this is a write-only atom
     async (_get, set, req: {token: string, callback: (arg:boolean)=>void}) => {

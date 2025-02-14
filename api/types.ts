@@ -6,14 +6,17 @@ export interface ParamsState {
 
 export interface StocksState {
   loading: boolean;
+  initialStockData?: StockData[];
   stockData: StockData[];
   error: string | null;
-  allocationData: {};
+  allocationData: StockAllocation;
+  initialAllocationData?: {};
 }
 
 export interface StocksParams {
   tickers: string[];
-  capital: number;
+  capital: string;
+  isPro?: boolean;
 }
 
 export type StockAllocation = {
@@ -73,10 +76,10 @@ export interface StockData {
   percentAlloc?: number;
   oneMonthRoi?: number;
   threeMonthRoi?: number;
-  sixMonthRoi?: number;
-  oneYearRoi?: number;
-  fiveYearRoi?: number;
-  allTimeRoi?: number;
+  sixMonthRoi?: number | 'Upgrade';
+  oneYearRoi?: number | 'Upgrade';
+  fiveYearRoi?: number | 'Upgrade';
+  allTimeRoi?: number | 'Upgrade';
 }
 
 export interface GenericObject {
@@ -100,6 +103,7 @@ export interface User {
   id: string;
   username?: string;
   email: string;
+  isPro: boolean;
 }
 
 
@@ -117,12 +121,12 @@ export class MyStockData {
   changePercent?: string;
   alloc?: number;
   percentAlloc?: number;
-  oneMonthRoi?: number;
-  threeMonthRoi?: number;
-  sixMonthRoi?: number;
-  oneYearRoi?: number;
-  fiveYearRoi?: number;
-  allTimeRoi?: number;
+  oneMonthRoi?: number | string;
+  threeMonthRoi?: number | string;
+  sixMonthRoi?: number | string;
+  oneYearRoi?: number | string;
+  fiveYearRoi?: number | string;
+  allTimeRoi?: number | string;
   
   constructor(data: Partial<StockData>) {
     this.price = data.price ?? 0;

@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import {Button, Menu, MenuItem, Modal} from '@mui/material'
 import {useAtomValue} from 'jotai';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -13,6 +13,13 @@ const Header = () => {
     const [open, setOpen] = useState<boolean>(false)
     const [anchorEl, setAnchorEl] = useState(null)
     const [anchorElLogout, setAnchorElLogout] = useState(null)
+     const [isDum, setIsDum] = useState("Use Dummy")
+    
+      useEffect(()=>{
+        if (localStorage.getItem('useDummy')){
+          setIsDum("Use Real")
+        }
+      }, [])
 
     const user = useAtomValue(authAtom).user
 
@@ -32,7 +39,19 @@ const Header = () => {
         setShowLogout(false)
     }
 
+
+  const handleUseDummy = (useDum: string | null) =>{
+    if (useDum){
+      localStorage.removeItem("useDummy")
+      setIsDum("Use Dummy")
+    } else {
+      localStorage.setItem("useDummy", "yes")
+      setIsDum("Use Real")
+    }
+  }
+
     return (
+        <>
         <div className="simStockMenu">
             <Link to="/simulate">SimStock</Link>
             <p>Welcome, {user.username}!</p>
@@ -66,7 +85,6 @@ const Header = () => {
             <Modal
                 open={showLogout}
                 onClose={handleLogoutClose}
-                // onBackdropClick={handleLogoutClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -79,7 +97,10 @@ const Header = () => {
                 </div>
                 
             </Modal>
+            <Button onClick={()=>handleUseDummy(localStorage.getItem("useDummy"))}>{isDum}</Button>
         </div>
+        <div style={{height: 40}}></div>
+        </>
   );
 };
 

@@ -9,6 +9,7 @@ import './App.css'
 import LogInRegisterForm from "./components/auth/LogInRegisterForm";
 import ChatWindow from "./components/ChatWindow"
 import Profile from "./components/Profile";
+import ForgotPassword from "./components/auth/ForgotPassword";
 
 function App() {
 
@@ -30,6 +31,10 @@ function App() {
                   path="/login" 
                   linkText="Already have an account? Log In!" 
                   route="register"/>
+            }/>
+            <Route 
+              path="/forgot-password" element={
+                <ForgotPassword />
             }/>
             <Route
               path="*"

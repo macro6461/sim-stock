@@ -3,13 +3,13 @@ import {atom} from 'jotai';
 interface ParamsState {
     availableTickers: string[];
     selectedTickers: string[];
-    capital: number;
+    capital: string;
   }
   
 export const paramsAtom = atom<ParamsState>({
     availableTickers: ["APPL", "GOOGL", "MSFT", "AMZN", "META", "TSLA", "NVDA", "ADBE", "NFLX", "PYPL", "CRM", "INTC", "CSCO", "QCOM", "AMD", "ASML"],
     selectedTickers: [],
-    capital: 0,
+    capital: "0",
 })
 
 export const getAvailableTickers = atom((get)=> {
@@ -27,7 +27,7 @@ export const updateTickers = atom(null, (_get, set, tickers: string[])=>{
     }))
 })
 
-export const updateCapital = atom(null, (_get, set, newCap: number)=>{
+export const updateCapital = atom(null, (_get, set, newCap: string)=>{
     set(paramsAtom, (prev)=>({
         ...prev,
         capital: newCap

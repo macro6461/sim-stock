@@ -1,4 +1,13 @@
-import { StocksParams, StockData, StockAllocation, GetStockDataResponse, MyStockData, GenericObject, IndividualStockData, TimeData, FirstStockData } from './types';
+import { StocksParams, StockData, StockAllocation, GetStockDataResponse, MyStockData, GenericObject, TimeData, FirstStockData } from './types';
+import data from "./data.json"; 
+let myData = data.results as any
+const periods = [
+  { label: "oneMonthRoi", months: 1, pro: false },
+  { label: "threeMonthRoi", months: 3, pro: false },
+  { label: "sixMonthRoi", months: 6, pro: true },
+  { label: "oneYearRoi", months: 12, pro: true },
+  { label: "fiveYearRoi", months: 60, pro: true }
+];
 
 const sanitizeStock = (stock: any) =>{
   return Object.fromEntries(
@@ -36,7 +45,7 @@ const calcRoi = (now:string, then:string) => {
  
 }
 
-const getClosingPrices = (data: StockData, todayData: string, today: string) => {
+const getClosingPrices = (data: StockData, todayData: string, today: string, isPro?: boolean) => {
   const todayFormatted = cleanDateFormat(today)
   
   function getDateMonthsAgo(months: number) {
@@ -49,16 +58,22 @@ const getClosingPrices = (data: StockData, todayData: string, today: string) => 
       const availableDates = Object.keys(data.timeData).sort((a, b) => new Date(b) > new Date(a) ? 1 : -1 );
       return availableDates.find(date => date <= targetDate) || null;
   }
+
+  const roiResults = periods.reduce((acc, { label, months, pro }) => {
+    let newData = data as GenericObject;
+    if (!isPro && pro) {
+      acc[label] = "Upgrade";
+      return acc;
+    }
   
-  const oneMonthAgo = findClosestDate(getDateMonthsAgo(1));
-  const threeMonthsAgo = findClosestDate(getDateMonthsAgo(3));
-  let newData = data as GenericObject
-  let oneM = oneMonthAgo ? newData.timeData[oneMonthAgo] : null
-  let threeM = threeMonthsAgo ? newData.timeData[threeMonthsAgo] : null
-  return {
-      "oneMonthRoi": calcRoi(todayData, oneM["4. close"]),
-      "threeMonthRoi": calcRoi(todayData, threeM["4. close"])
-  };
+    const date = findClosestDate(getDateMonthsAgo(months));
+    const priceData = date ? newData.timeData[date] : null;
+  
+    acc[label] = priceData ? calcRoi(todayData, priceData["4. close"]) : "No Data";
+    return acc;
+  }, {} as Record<string, string | number>);
+
+  return roiResults;
 }
 
 const getFirstObject = (data: GenericObject) =>{
@@ -78,29 +93,35 @@ const getFirstObject = (data: GenericObject) =>{
 
 
 export const stockApi = {
-  async getStockData({ tickers, capital }: StocksParams): Promise<GetStockDataResponse> {
+  async getStockData({ tickers, capital, isPro }: StocksParams): Promise<GetStockDataResponse> {
     try {
-     // Make parallel requests for each ticker
-     const promises = tickers.map(ticker => 
-        fetch(
-          `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&outputsize=full&apikey=${import.meta.env.VITE_ALPHA_VANTAGE_API_KEY}`
-        ).then(response => response.json())
-      );
+      let results = myData
+      if (!localStorage.getItem("useDummy")){
+        // Make parallel requests for each ticker (can only bulk search with Pro version of AlphaVantage)
+        const promises = tickers.map(ticker => 
+          fetch(
+            `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker}&outputsize=full&apikey=${import.meta.env.VITE_ALPHA_VANTAGE_API_KEY}`
+          ).then(response => response.json())
+        );
 
-      let results = await Promise.all(promises);
-      let defaultCapitalAlloc = Math.round(capital / results.length)
+        results = await Promise.all(promises);
+      }
+      debugger
+      let cap = parseInt(capital)
+      let defaultCapitalAlloc = Math.round(cap / results.length)
       let defaultPercentAlloc = Math.round(100 / results.length)
       let allocationObject: StockAllocation = {};
-      results = results.map((result) => {
+      results = results.map((result: GenericObject) => {
         let first = getFirstObject(result['Time Series (Daily)'])
         let newRes = createStockData(result['Meta Data'], first, result['Time Series (Daily)'] )
         newRes.percentAlloc = defaultPercentAlloc
         newRes.alloc = defaultCapitalAlloc
         allocationObject[newRes.symbol] = {percent: defaultPercentAlloc, cap: defaultCapitalAlloc}
         let d = sanitizeStock(first.data)
-        let {oneMonthRoi, threeMonthRoi} =  getClosingPrices(newRes as StockData, d.close, first.key)
-        newRes.oneMonthRoi = oneMonthRoi
-        newRes.threeMonthRoi = threeMonthRoi
+        newRes = { 
+          ...newRes, 
+          ...getClosingPrices(newRes as StockData, d.close, first.key, isPro) 
+        };
         return newRes
       })
       return {results, allocationObject}

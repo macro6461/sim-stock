@@ -1,5 +1,5 @@
 #root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -12,9 +12,12 @@
   left: 0;
   display: flex;
   justify-content: space-between;
-  align-items:baseline;
+  align-items:center;
   padding: 10px;
   cursor: pointer;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
 }
 
 .simStockMenu > p {
@@ -140,4 +143,20 @@
 
 .negative {
   color: red;
+}
+
+.pinFormItem {
+  width: 40px !important;
+  margin:10px !important;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.pinFormItem input {
+  text-align: center;
+  font-size: 40px;
+}
+
+.upgradeLink{
+  display: block;
+  transform: rotate(-45deg);
 }

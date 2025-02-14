@@ -2,7 +2,7 @@
 
 This file tracks released versions with the changes made to this project.
 
-## Version 1.0.8
+## Version 1.0.9
 
 ### Added
 
@@ -11,6 +11,8 @@ This file tracks released versions with the changes made to this project.
 - Incorporating Jest and React Testing Library to start building test suite for Sim Stock.
 - Added test squite for `ChatWindow.tsx`.
 - Added `MyStockData` class for instantiation in `types.ts`.
+- Added forgot password UI including PIN confirmation, validating email, new password form.
+- Added logic to reset the current allocations to the initial ones.
 
 ### Fixed
 

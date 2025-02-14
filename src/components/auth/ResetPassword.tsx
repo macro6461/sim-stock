@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import {useAtomValue, useSetAtom} from 'jotai';
-import {GoogleOAuthProvider} from '@react-oauth/google';
+import {useAtomValue} from 'jotai';
 import {Link} from 'react-router-dom'
-import { useAuth } from "./AuthContext";
 import { FormControl, Input, FormLabel, Button } from "@mui/material";
-import { authAtom, loginOrRegister } from "../../../store/atoms";
-import GoogleLoginComponent from './GoogleLoginComponent'
+import { authAtom } from "../../../store/atoms";
 
 interface LoginRegisterFormProps {
     path: string;
@@ -14,11 +11,9 @@ interface LoginRegisterFormProps {
     header: string;
 }
 
-const LoginRegisterForm: React.FC<LoginRegisterFormProps> = ({ path, linkText, route, header }) => {
-  const [formData, setFormData] = useState({ email: "", password: ""});
-  const { login } = useAuth(); 
+const LoginRegisterForm: React.FC<LoginRegisterFormProps> = ({ }) => {
+  const [formData, setFormData] = useState({ email: "", emailConfirm: ""});
   const authError = useAtomValue(authAtom).error
-  const logOrReg = useSetAtom(loginOrRegister)
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,18 +21,12 @@ const LoginRegisterForm: React.FC<LoginRegisterFormProps> = ({ path, linkText, r
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    try {
-      const data = await logOrReg({formData, route})
-      login(data);
-    } catch (err: any){
-      console.error(err)
-    }
-
+    // TO DO: Add API request for updating the password.
   };
 
   return (
     <>
-    <h1>{header}</h1>
+    <h1>Forgot Password</h1>
     <form onSubmit={handleSubmit}>
       <FormControl fullWidth margin="normal">
         <FormLabel htmlFor="email" required>Email</FormLabel>
@@ -45,14 +34,11 @@ const LoginRegisterForm: React.FC<LoginRegisterFormProps> = ({ path, linkText, r
       </FormControl>
 
       <FormControl fullWidth margin="normal">
-        <FormLabel htmlFor="password" required >Password</FormLabel>
-        <Input name="password" id="password" type="password" value={formData.password} onChange={handleChange}/>
+        <FormLabel htmlFor="email-confirm" required >Confirm Email</FormLabel>
+        <Input name="email-confirm" id="email-confirm" type="email" value={formData.emailConfirm} onChange={handleChange}/>
       </FormControl>
-      {header.toLowerCase().indexOf("log") > -1 ? <Link className="formRedirect" to='/forgot-password'>Forgot Password</Link> : null }
-      <br/>
-      <br/>
       <Button type="submit" variant="contained">
-        {header}
+        Submit
       </Button>
     </form>
     {authError 
@@ -64,12 +50,7 @@ const LoginRegisterForm: React.FC<LoginRegisterFormProps> = ({ path, linkText, r
       : null
     }
     <br/>
-    <Link className="formRedirect" to={path}>{linkText}</Link>
-    <div className="googleAuthContainer">
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-          <GoogleLoginComponent/>
-      </GoogleOAuthProvider> 
-    </div>
+    <Link className="formRedirect" to={'/login'}>Login</Link>
     </>
   );
 };

@@ -1,4 +1,4 @@
-# Sim Stock v1.0.8
+# Sim Stock v1.0.9
 
 A React app for comparing stock returns between time periods and of varying capital allocations.
 

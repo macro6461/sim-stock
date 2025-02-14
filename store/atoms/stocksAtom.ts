@@ -1,12 +1,14 @@
 import {atom} from 'jotai';
-import { StockAllocation, stockApi, StocksParams, StocksState} from '../../api';
+import { StockAllocation, stockApi, StockData, StocksParams, StocksState} from '../../api';
 import {getCurrentCapital} from './paramsAtom'
 
   
 export const stocksAtom = atom<StocksState>({
-    loading: false,
+    loading: true,
+    initialStockData: [],
     stockData: [],
     allocationData: {},
+    initialAllocationData: {},
     error: null,
 })
 
@@ -28,7 +30,9 @@ export const fetchStockData = atom(
           ...prev,
           loading: false,
           stockData: results,
+          initialStockData: results,
           allocationData: allocationObject,
+          initialAllocationData: allocationObject,
           error: null,
         }));
       } catch (error: any) {
@@ -49,7 +53,7 @@ export const updateAllocation = atom(
         set(stocksAtom, (prev) => ({ ...prev, loading: true, error: null }));
         let currentAlloc = {...get(stocksAtom).allocationData} as StockAllocation;
         let defAllocCoef = Object.keys(currentAlloc).length - Object.keys(newAllocations).length
-        let cap = get(getCurrentCapital)
+        let cap = parseInt(get(getCurrentCapital))
         let remaining = 100 - total
         let responsiveAlloc = remaining / defAllocCoef
         for (const symbol in currentAlloc) {
@@ -67,6 +71,20 @@ export const updateAllocation = atom(
             loading: false
           }));
           
+    }
+  );
+
+  export const resetStockData = atom(
+    null, // No read function, this is a write-only atom
+    (get, set) => {
+      let stockData = get(stocksAtom).initialStockData as StockData[];
+      let allocationData = get(stocksAtom).initialAllocationData as StockAllocation;
+
+      set(stocksAtom, (prev: StocksState): StocksState => ({
+        ...prev, 
+        stockData,
+        allocationData
+      }));
     }
   );
 
