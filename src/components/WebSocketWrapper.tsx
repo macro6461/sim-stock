@@ -1,12 +1,15 @@
 import {useEffect, useState, useRef} from 'react'
 import useWebSocket from "../../hooks/useWebsocket";
 import SendIcon from '@mui/icons-material/Send';
-import SmartToyIcon from '@mui/icons-material/SmartToy';
 import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
+import WebSocketMessage from './WebSocketMessage';
 
+interface WebSocketWrapperProps {
+    closeChat: ()=>void
+}
 
-const WebSocketWrapper = (props: any) =>{
+const WebSocketWrapper: React.FC<WebSocketWrapperProps> = ({closeChat}) =>{
     const { messages, sendMessage, closeSocket } = useWebSocket("ws://localhost:1999");
     const [maxHeight, setMaxHeight] = useState<number | null>(null)
     const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -18,7 +21,7 @@ const WebSocketWrapper = (props: any) =>{
 
     const handleClose = () => {
         closeSocket()
-        props.closeChat(false)
+        closeChat()
     }
 
     const handleSend = () => {
@@ -42,22 +45,9 @@ const WebSocketWrapper = (props: any) =>{
             <CloseIcon onClick={handleClose} className="modalClose" style={{marginBottom: 10}}/>
             <br/>
             <h4 className="chatHeader">SimStock Assistant</h4>
-            <div className="messageContainer" style={{maxHeight: maxHeight + 'px'}}>
+            <div className="messageContainer" style={{maxHeight: maxHeight ? maxHeight + 'px' : 'none'}}>
                 {messages.map((msg, index) => {
-                    let isFromAssistant = index % 2 === 0
-                    return <div key={index} style={{marginTop: 10}}>
-                         {isFromAssistant 
-                         ? <p className="messageIcon">
-                                <SmartToyIcon/>
-                            </p>
-                            : null
-                         }
-                        <p className={isFromAssistant ? "message assistant" : "message"}>
-                            {msg.split("\n").length > 1 ? msg.split("\n").map((line, i)=>{
-                                return <React.Fragment key={i}>{line}<br/><br/></React.Fragment>
-                            }) : msg}
-                        </p>
-                    </div>
+                    return <WebSocketMessage key={index} index={index} msg={msg}/>
                 })}
             </div>
             <br/>
@@ -67,6 +57,11 @@ const WebSocketWrapper = (props: any) =>{
                     type="text"
                     style={{width: "100%"}}
                     placeholder="Ask me anything!"
+                    onKeyUp={(e) => {
+                        if (e.key === "Enter") {
+                            handleSend();
+                        }
+                      }} 
                 />
                 <SendIcon onClick={handleSend} style={{transform: "rotate(-50deg)", marginLeft: 5}}/>
             </div>

@@ -1,9 +1,10 @@
 {
     "name": "sim-stock",
     "private": true,
-    "version": "1.0.9",
+    "version": "1.0.10",
     "description": "A React app for comparing stock returns between time periods and of varying capital allocations.",
     "author": "Matthew Croak",
+    "license": "MIT",
     "scripts": {
         "dev": "vite",
         "build": "tsc -b && vite build",

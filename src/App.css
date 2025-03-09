@@ -132,6 +132,14 @@
   justify-content: flex-start;
 }
 
+.inputContainer {
+  display: flex;
+  align-items: center; 
+  justify-content: space-between;
+   border-top: solid 1px black; 
+   padding: 10px;
+}
+
 .positive, .negative {
   font-size: 25px;
   font-weight: 700;

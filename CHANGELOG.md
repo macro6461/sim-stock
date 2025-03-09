@@ -2,7 +2,7 @@
 
 This file tracks released versions with the changes made to this project.
 
-## Version 1.0.9
+## Version 1.0.10
 
 ### Added
 
@@ -13,11 +13,12 @@ This file tracks released versions with the changes made to this project.
 - Added `MyStockData` class for instantiation in `types.ts`.
 - Added forgot password UI including PIN confirmation, validating email, new password form.
 - Added logic to reset the current allocations to the initial ones.
+- Added logger to Chatbot responses and added onEnter listener to Chatbot input.
 
 ### Fixed
 
 - Changed extension of api files from `.tsx` to `.ts` as they do not contain JSX.
-- Updated associated ts config files to permit `.ts` files as well as `.tsx` and include `/api`. 
+- Updated associated ts config files to permit `.ts` files as well as `.tsx` and include `/api`.
 
 ## Version 1.0.6
 

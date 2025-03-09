@@ -6,13 +6,16 @@ import ForumIcon from '@mui/icons-material/Forum';
 const ChatWindow = () =>{
     const [openChat, setOpenChat] = useState<boolean>(false);
 
+    const handleCloseChat = () =>{
+        setOpenChat(false)
+    }
 
     return (
         <div className="chatWindowContainer">
             {!openChat ? <ForumIcon data-testid="ForumIcon" onClick={()=>setOpenChat(true)} fontSize="large">Start Chatting!</ForumIcon> : null }
             {openChat
                 ?   <Paper elevation={24} style={{padding: 20}}>
-                        <WebSocketWrapper closeChat={()=>setOpenChat(false)} />
+                        <WebSocketWrapper closeChat={()=>handleCloseChat()} />
                     </Paper>
                 :   null
         }
