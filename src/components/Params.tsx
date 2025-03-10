@@ -24,14 +24,6 @@ export default function Params() {
   const getStockData = useSetAtom(fetchStockData)
   const reset = useSetAtom(resetStockData)
 
-  const [isDum, setIsDum] = useState("Use Dummy")
-
-  useEffect(()=>{
-    if (localStorage.getItem('useDummy')){
-      setIsDum("Use Real")
-    }
-  }, [])
-
   const handleChange = (event: SelectChangeEvent<string[]>) => {
     const {
       target: { value },

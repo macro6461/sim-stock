@@ -1,4 +1,4 @@
-import { StocksParams, StockData, StockAllocation, GetStockDataResponse, MyStockData, GenericObject, TimeData, FirstStockData } from './types';
+import { StocksParams, StockData, StockAllocation, GetStockDataResponse, MyStockData, GenericObject, TimeData, FirstStockData, Total } from './types';
 import data from "./data.json"; 
 let myData = data.results as any
 const periods = [
@@ -106,7 +106,6 @@ export const stockApi = {
 
         results = await Promise.all(promises);
       }
-      debugger
       let cap = parseInt(capital)
       let defaultCapitalAlloc = Math.round(cap / results.length)
       let defaultPercentAlloc = Math.round(100 / results.length)
@@ -130,3 +129,35 @@ export const stockApi = {
     }
   }
 };
+
+export const unitFormat = (roi: number, isPercent: boolean, allocatedCapital: number | Total) => {
+  if (isPercent){
+      return Math.round((roi * 100) * 100) / 100 + "%"
+  } else {
+    if (typeof allocatedCapital === 'object' && 'fiat' in allocatedCapital) {
+      // allocatedCapital is of type Total
+      let dollarAmount = allocatedCapital.fiat
+      let dollarStr = dollarAmount < 0 ? '-$' : '$'
+      dollarAmount = dollarAmount < 0 ? dollarAmount * -1 : dollarAmount
+      return dollarStr + formatWithCommas(dollarAmount)
+    } else {
+      // allocatedCapital is a number
+      let dollarAmount = allocatedCapital * roi
+      let dollarStr = dollarAmount < 0 ? '-$' : '$'
+      dollarAmount = dollarAmount < 0 ? dollarAmount * -1 : dollarAmount
+      return dollarStr + formatWithCommas(dollarAmount)
+    }
+  }
+}
+
+const formatWithCommas = (num: number) =>{
+  let final = ''
+  let reversedNum = num.toFixed(0).toString().split("").reverse()
+  for (let i = 0; i < reversedNum.length; ++i){
+      if (i !== 0 && i % 3 === 0){
+          final += ','
+      }
+      final += reversedNum[i]
+  }
+  return final.split("").reverse().join("")
+}

@@ -1,7 +1,7 @@
 export interface ParamsState {
   availableTickers: string[];
   selectedTickers: string[];
-  capital: number;
+  capital: string;
 }
 
 export interface StocksState {
@@ -10,7 +10,24 @@ export interface StocksState {
   stockData: StockData[];
   error: string | null;
   allocationData: StockAllocation;
-  initialAllocationData?: {};
+  initialAllocationData?: {}
+  adjustedAllocationData?: {};
+  isReset: boolean;
+  totals: Totals;
+}
+
+export interface Totals {
+  oneMonthRoi: Total;
+  threeMonthRoi: Total;
+  sixMonthRoi: Total;
+  oneYearRoi: Total;
+  fiveYearRoi: Total;
+}
+
+
+export interface Total {
+  percent: number;
+  fiat: number;
 }
 
 export interface StocksParams {
@@ -72,14 +89,14 @@ export interface StockData {
   prevClose: string;
   change: string;
   changePercent: string;
-  alloc?: number;
+  alloc: number;
   percentAlloc?: number;
-  oneMonthRoi?: number;
-  threeMonthRoi?: number;
-  sixMonthRoi?: number | 'Upgrade';
-  oneYearRoi?: number | 'Upgrade';
-  fiveYearRoi?: number | 'Upgrade';
-  allTimeRoi?: number | 'Upgrade';
+  oneMonthRoi: number | 'Upgrade' | undefined;
+  threeMonthRoi: number | 'Upgrade' | undefined;
+  sixMonthRoi: number | 'Upgrade' | undefined;
+  oneYearRoi: number | 'Upgrade' | undefined;
+  fiveYearRoi: number | 'Upgrade' | undefined;
+  allTimeRoi: number | 'Upgrade' | undefined;
 }
 
 export interface GenericObject {
@@ -105,7 +122,6 @@ export interface User {
   email: string;
   isPro: boolean;
 }
-
 
 export class MyStockData {
   price: number;

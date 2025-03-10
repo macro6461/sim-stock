@@ -2,7 +2,15 @@
 
 This file tracks released versions with the changes made to this project.
 
-## Version 1.0.10
+## Version 1.0.11
+
+### Added
+
+- Totals logic to the table.
+- Allowing toggling between percentage and fiat ROI.
+- Added `RoiCell.tsx` for the ROI formatting in the table.
+
+## Version 1.0.9
 
 ### Added
 
@@ -18,7 +26,7 @@ This file tracks released versions with the changes made to this project.
 ### Fixed
 
 - Changed extension of api files from `.tsx` to `.ts` as they do not contain JSX.
-- Updated associated ts config files to permit `.ts` files as well as `.tsx` and include `/api`.
+- Updated associated ts config files to permit `.ts` files as well as `.tsx` and include `/api`. 
 
 ## Version 1.0.6
 

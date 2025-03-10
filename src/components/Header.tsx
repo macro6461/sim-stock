@@ -12,8 +12,7 @@ const Header = () => {
     const [showLogout, setShowLogout] = useState<boolean>(false)
     const [open, setOpen] = useState<boolean>(false)
     const [anchorEl, setAnchorEl] = useState(null)
-    const [anchorElLogout, setAnchorElLogout] = useState(null)
-     const [isDum, setIsDum] = useState("Use Dummy")
+    const [isDum, setIsDum] = useState("Use Dummy")
     
       useEffect(()=>{
         if (localStorage.getItem('useDummy')){
@@ -25,9 +24,8 @@ const Header = () => {
 
     const { logout } = useAuth(); 
 
-    const handleShowLogout = (event: any) =>{
+    const handleShowLogout = () =>{
         setShowLogout(!showLogout)
-        setAnchorElLogout(event.currentTarget);
     }
 
     const handleShowMenu = (event:any) =>{
