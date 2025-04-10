@@ -1,5 +1,5 @@
 import axios from "axios";
-import {SimStockError} from './types'
+import {extractError} from './'
 
 export const authApi = {
     async verifyToken(token: string, callback: (arg:boolean)=>void){
@@ -48,13 +48,41 @@ export const authApi = {
             throw err;
         }
         
+    },
+    async getSavedSims(userId: string, token?: string){
+        try {
+            const res = await fetch(`http://localhost:1993/${userId}/simulations`, {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: token || "",
+                },
+              });
+          
+              const data = await res.json();
+              return data;
+        } catch (error:any){
+            let err = extractError(error, "Unable to Get Sims.")
+            throw err;
+        }
+        
+    },
+    async deleteSim(simulationId: string, userId: string, token?: string){
+        debugger
+        try {
+            const res = await fetch(`http://localhost:1993/simulations/${simulationId}?userId=${userId}`, {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: token || "",
+                },
+              });
+          
+              const data = await res.json();
+              return data;
+        } catch (error:any){
+            let err = extractError(error, "Unable to Delete Sim.")
+            throw err;
+        }
     }
-}
-
-const extractError = (error: any, title: string) => {
-    let code = error.code
-    code = `${title}: ${code}`
-    let message = error.message
-    let details = error.details || (error.response ? error.response.data.message : "N/A")
-    return {code, message, details} as SimStockError; 
 }

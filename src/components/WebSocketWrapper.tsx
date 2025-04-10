@@ -51,7 +51,7 @@ const WebSocketWrapper: React.FC<WebSocketWrapperProps> = ({closeChat}) =>{
                 })}
             </div>
             <br/>
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: 'solid 1px black', padding: 10}}>
+            <div className="inputContainer">
                 <input
                     ref={messageRef}
                     type="text"

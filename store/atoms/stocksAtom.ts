@@ -1,6 +1,7 @@
 import {atom} from 'jotai';
 import { GenericObject, StockAllocation, stockApi, StockData, StocksParams, StocksState, Totals} from '../../api';
-import {getCurrentCapital} from './paramsAtom'
+import {getCurrentCapital, paramsAtom} from './paramsAtom'
+import { authAtom } from './authAtom';
 
 const initialTotals: Totals = {
   oneMonthRoi: { percent: 0, fiat: 0 },
@@ -16,6 +17,7 @@ export const stocksAtom = atom<StocksState>({
     stockData: [],
     allocationData: {},
     initialAllocationData: {},
+    adjustedAllocation: {},
     error: null,
     isReset: false,
     totals: initialTotals
@@ -81,8 +83,6 @@ export const updateAllocation = atom(
             }
         }
 
-        debugger
-
         // need way to update totals here.
 
         set(stocksAtom, (prev) => ({
@@ -109,6 +109,16 @@ export const updateAllocation = atom(
     }
   );
 
+  export const updateAdjustedAllocationData = atom(
+    null,
+    (get, set, { adjAlloc }: { adjAlloc: { [key: string]: { percent: number; cap: number } } | {} }) => {
+      set(stocksAtom, (prev: StocksState): StocksState => ({
+        ...prev, 
+        adjustedAllocation: adjAlloc
+      }));
+    }
+  );
+
   export const updateReset = atom(
     null, // No read function, this is a write-only atom
     (get, set) => {
@@ -118,6 +128,39 @@ export const updateAllocation = atom(
       }));
     }
   )
+
+  export const saveSimulation = atom(
+    null, // read is not used
+    async (_get, _set) => {
+      const {token, user} = _get(authAtom)
+
+      try {
+        let data = Object.keys(_get(stocksAtom).adjustedAllocation).length > 0 ? _get(stocksAtom).adjustedAllocation : _get(stocksAtom).allocationData
+        const response = await fetch("http://localhost:1993/simulations", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ userId: user.id, data, capital: _get(paramsAtom).capital }),
+        });
+  
+        const result = await response.json();
+         // Update the state with the fetched data
+         _set(stocksAtom, (prev) => ({
+          ...prev,
+          loading: false,
+          allocationData: result.data,
+          adjustedAllocationData: {},
+          error: null,
+        }));
+        if (!response.ok) throw new Error(result.message);
+        console.log("Simulation saved:", result);
+      } catch (error: any) {
+        console.error("Failed to save simulation:", error.message);
+      }
+    }
+  );
 
   const totalsHelper = (data: StockData[], currentTotals: Totals) =>{
     let final = {...currentTotals}

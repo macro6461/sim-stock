@@ -10,8 +10,8 @@ export interface StocksState {
   stockData: StockData[];
   error: string | null;
   allocationData: StockAllocation;
+  adjustedAllocation: StockAllocation;
   initialAllocationData?: {}
-  adjustedAllocationData?: {};
   isReset: boolean;
   totals: Totals;
 }
@@ -101,6 +101,20 @@ export interface StockData {
 
 export interface GenericObject {
   [key: string]: any
+}
+
+export interface ConfirmationModalProps {
+  text: string;
+  callback: any;
+  close: any;
+  isOpen: boolean;
+}
+
+export interface SavedSim {
+  _id: string;
+  userId: string;
+  data: any;
+  capital: number;
 }
 
 export interface SimStockError {

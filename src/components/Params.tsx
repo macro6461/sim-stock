@@ -1,9 +1,11 @@
-import {useState, useEffect} from 'react'; 
+import {useState} from 'react';
 import {useAtomValue, useSetAtom} from 'jotai';
-import { updateTickers, updateCapital, fetchStockData, paramsAtom, stocksAtom, resetStockData } from '../../store/atoms';
-import { Box, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField, Button, InputAdornment } from '@mui/material';
+import { updateTickers, updateCapital, fetchStockData, paramsAtom, stocksAtom, resetStockData, saveSimulation } from '../../store/atoms';
+import { Box, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField, Button, InputAdornment, Modal, Typography } from '@mui/material';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import SaveIcon from '@mui/icons-material/Save'
+import ConfirmationModal from './ConfirmationModal';
 
 const MenuProps = {
   PaperProps: {
@@ -14,6 +16,9 @@ const MenuProps = {
 };
 
 export default function Params() {
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   const availableTickers = useAtomValue(paramsAtom).availableTickers
   const selectedTickers = useAtomValue(paramsAtom).selectedTickers
   const capital = useAtomValue(paramsAtom).capital
@@ -23,6 +28,7 @@ export default function Params() {
   const setUpdatedCapital = useSetAtom(updateCapital)
   const getStockData = useSetAtom(fetchStockData)
   const reset = useSetAtom(resetStockData)
+  const saveSim = useSetAtom(saveSimulation)
 
   const handleChange = (event: SelectChangeEvent<string[]>) => {
     const {
@@ -31,8 +37,24 @@ export default function Params() {
     setSelectedTickers(value as string[])
   };
 
-  const handleSubmit = () => {
-    getStockData({tickers: selectedTickers, capital})
+  const handleSubmit = (fromModal?: boolean) => {
+    if (stockDataLength > 0 && !fromModal){
+      setIsModalOpen(true)
+    } else {
+      if (fromModal){
+        saveSim()
+      } else {
+        getStockData({tickers: selectedTickers, capital})
+      }
+    }
+  }
+
+  const closeModal = () =>{
+    setIsModalOpen(false)
+  }
+
+  const handleSaveModel = () =>{
+    saveSim()
   }
 
   return (
@@ -81,15 +103,32 @@ export default function Params() {
       />
     </FormControl>
     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-      <Button variant="contained" color="primary" onClick={handleSubmit} disabled={selectedTickers.length === 0 || !capital}>
-        <CalculateIcon/>&nbsp; Simulate
+      <Button 
+        variant="contained" 
+        color="primary" 
+        onClick={(e) => handleSubmit()} 
+        disabled={selectedTickers.length === 0 || !capital}
+      >
+        <CalculateIcon/> &nbsp; {stockDataLength > 0 ? "New Simulation" : "Simulate"}
       </Button>
       {stockDataLength > 0 
-      ?   <>&nbsp; <Button variant="contained" color="primary" onClick={reset} disabled={selectedTickers.length === 0 || !capital}>
+        ? <>&nbsp; <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={(e) => reset()} 
+            disabled={selectedTickers.length === 0 || !capital}
+          >
       <RestartAltIcon/>&nbsp; Reset
     </Button></>  : null}
+    {stockDataLength > 0 &&
+      <>
+        &nbsp; <Button variant="contained" color="primary" onClick={handleSaveModel} disabled={selectedTickers.length === 0 || !capital}>
+                  <SaveIcon/>&nbsp; Save Simulation
+              </Button>
+      </> 
+    }
     </Box>
-    
+    <ConfirmationModal isOpen={isModalOpen} close={closeModal} text="Want to save current simulation before starting a new one?" callback={()=>handleSubmit(true)}/>
     </div>
   );
 }

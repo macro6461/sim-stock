@@ -38,7 +38,7 @@ const RoiCell: React.FC<RoiCellProps> = ({isPercent, roi, allocatedCapital, isTo
                             {roi !== "Upgrade"
                                 ? <p className={roi && roi > 0 ? 'positive' : 'negative'} style={{fontSize: isTotal ? 25 : 15 }}>
                                     {evalWhichKindOfNumber(roi)}
-                                    {/* {roi && roi > 0 ? "+" : null} {roi ? unitFormat(roi, isPercent, allocatedCapital) : "Information not Available"}  */}
+                                  
                                     </p>
                                 : <Tooltip title={"Upgrade to SimStock Pro"} placement="left-start">
                                     <Link className="upgradeLink" to="/profile">

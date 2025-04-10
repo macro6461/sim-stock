@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Link } from "react-router-dom";
 import { useAuth } from './auth/AuthContext';
 import { authAtom } from '../../store/atoms';
+import ConfirmationModal from './ConfirmationModal' 
 
 const Header = () => {
 
@@ -80,21 +81,7 @@ const Header = () => {
                 </MenuItem>
                 <MenuItem onClick={handleShowLogout}>Logout</MenuItem>
             </Menu>
-            <Modal
-                open={showLogout}
-                onClose={handleLogoutClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <div className="modalInner">
-                    <div className="modalInnerMost">
-                        <CloseIcon onClick={handleLogoutClose} className="modalClose"/>
-                        <h3>Are you sure you want to log out?</h3>
-                        <Button onClick={()=>logout()}>Confirm Log Out</Button>
-                    </div>
-                </div>
-                
-            </Modal>
+            <ConfirmationModal text="Are you sure you want to log out?" close={handleLogoutClose} callback={logout} isOpen={showLogout}/>
             <Button onClick={()=>handleUseDummy(localStorage.getItem("useDummy"))}>{isDum}</Button>
         </div>
         <div style={{height: 40}}></div>

@@ -1,38 +1,42 @@
 
 import {useAtomValue, useSetAtom} from 'jotai';
-import { stocksAtom, updateAllocation, updateReset } from '../../store/atoms/';
-import { StockData, StockAllocation, IsChanged, Totals, unitFormat } from '../../api';
-import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Slider, CircularProgress, FormControlLabel, Checkbox, TableFooter } from '@mui/material';
+import { stocksAtom, updateAllocation, updateReset, saveSimulation, updateAdjustedAllocationData } from '../../store/atoms/';
+import { StockData, StockAllocation, IsChanged, Totals } from '../../api';
+import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Slider, CircularProgress, FormControlLabel, Checkbox } from '@mui/material';
 import { useEffect, useState } from 'react';
 import SaveIcon from '@mui/icons-material/Save';
 import RoiCell from './RoiCell'
 
 const StockList = () => {
-    const [adjustedAllocation, setAdjustedAllocation] = useState<StockAllocation>({});
     const [usePercent, setUsePercent] = useState<boolean>(true);
     const [isChanged, setIsChanged] = useState<IsChanged>({});
     const stockData: StockData[] = useAtomValue(stocksAtom).stockData
     const loading: boolean = useAtomValue(stocksAtom).loading
-    const allocationData: StockAllocation = useAtomValue(stocksAtom).allocationData
+    const allocationData: StockAllocation = useAtomValue(stocksAtom).allocationData ?? {}
+    const adjustedAllocation: StockAllocation = useAtomValue(stocksAtom).adjustedAllocation ?? {}
     const isReset: boolean = useAtomValue(stocksAtom).isReset
     const totals: Totals = useAtomValue(stocksAtom).totals
     const updateAlloc = useSetAtom(updateAllocation)
     const updateResetHere = useSetAtom(updateReset)
+    const setAdjustedAllocation = useSetAtom(updateAdjustedAllocationData)
 
     useEffect(()=>{
         // Reset local adjustedAllocation after submitting new stock atom's allocationData
-        setAdjustedAllocation({})
+        setAdjustedAllocation({adjAlloc: {} })
         updateResetHere()
     }, [isReset === true])
 
-    const handleAllocationAdjustment = (symbol: string, value: string) =>{
-        let adjAlloc = {...adjustedAllocation}
-        let changed = {...isChanged}
-        changed[symbol] = true
-        adjAlloc[symbol] = {...adjAlloc[symbol], percent: parseFloat(parseFloat(value).toFixed(2))}
-        setIsChanged(changed)
-        setAdjustedAllocation(adjAlloc)
-    }
+    const handleAllocationAdjustment = (symbol: string, value: string) => {
+        const adjAlloc = { ...adjustedAllocation };
+        const changed = { ...isChanged };
+        changed[symbol] = true;
+        adjAlloc[symbol] = { 
+          ...adjAlloc[symbol], 
+          percent: parseFloat(parseFloat(value).toFixed(2)) 
+        };
+        setIsChanged(changed);
+        setAdjustedAllocation({adjAlloc}); // This will update the global state
+      };
 
     const submitAllocationAdjustments = () =>{
         let vals = Object.values(adjustedAllocation)
@@ -136,19 +140,19 @@ const StockList = () => {
                                         <h3></h3>
                                     </TableCell>
                                     <TableCell>
-                                        <RoiCell isPercent={usePercent} roi={totals.oneMonthRoi.percent} allocatedCapital={totals.oneMonthRoi} isTotal/>
+                                        <RoiCell isPercent={usePercent} roi={usePercent ? totals.oneMonthRoi.percent : totals.oneMonthRoi.fiat } allocatedCapital={totals.oneMonthRoi} isTotal/>
                                     </TableCell>
                                     <TableCell>
-                                        <RoiCell isPercent={usePercent} roi={totals.threeMonthRoi.percent} allocatedCapital={totals.threeMonthRoi} isTotal/>
+                                        <RoiCell isPercent={usePercent} roi={usePercent ? totals.threeMonthRoi.percent : totals.threeMonthRoi.fiat } allocatedCapital={totals.threeMonthRoi} isTotal/>
                                     </TableCell>
                                     <TableCell>
-                                        <RoiCell isPercent={usePercent} roi={totals.sixMonthRoi.percent} allocatedCapital={totals.sixMonthRoi} isTotal/>
+                                        <RoiCell isPercent={usePercent} roi={usePercent ? totals.sixMonthRoi.percent : totals.sixMonthRoi.fiat } allocatedCapital={totals.sixMonthRoi} isTotal/>
                                     </TableCell>
                                     <TableCell>
-                                        <RoiCell isPercent={usePercent} roi={totals.oneYearRoi.percent} allocatedCapital={totals.oneYearRoi} isTotal/>
+                                        <RoiCell isPercent={usePercent} roi={usePercent ? totals.oneYearRoi.percent : totals.oneYearRoi.fiat } allocatedCapital={totals.oneYearRoi} isTotal/>
                                     </TableCell>
                                     <TableCell>
-                                        <RoiCell isPercent={usePercent} roi={totals.fiveYearRoi.percent} allocatedCapital={totals.fiveYearRoi} isTotal/>
+                                        <RoiCell isPercent={usePercent} roi={usePercent ? totals.fiveYearRoi.percent : totals.fiveYearRoi.fiat } allocatedCapital={totals.fiveYearRoi} isTotal/>
                                     </TableCell>
                                 </TableRow>
                                 </TableBody>

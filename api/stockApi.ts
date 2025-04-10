@@ -1,5 +1,7 @@
 import { StocksParams, StockData, StockAllocation, GetStockDataResponse, MyStockData, GenericObject, TimeData, FirstStockData, Total } from './types';
 import data from "./data.json"; 
+import {extractError} from './'
+
 let myData = data.results as any
 const periods = [
   { label: "oneMonthRoi", months: 1, pro: false },
@@ -127,7 +129,46 @@ export const stockApi = {
     } catch (error) {
       throw new Error(`Failed to fetch stock data: ${error}`);
     }
-  }
+  },
+
+  async saveSimulation(stockSim: StockData, callback: (arg:boolean)=>void){
+    try {
+
+        const response = await fetch("http://localhost:1993/simulations", {
+            method: "POST",
+            body: JSON.stringify(stockSim)
+        });
+
+        if (response.ok) {
+            callback(true);
+        } else {
+            callback(false);
+        }
+        return await response.json(); 
+    } catch (error) {
+        callback(false);
+        return extractError(error, "Token verification failed.")
+    }
+  },
+
+  async getSavedSimulations(userId: string, callback: (arg:boolean)=>void){
+    try {
+
+        const response = await fetch(`http://localhost:1993/${userId}/simulations/`, {
+            method: "GET",
+        });
+
+        if (response.ok) {
+            callback(true);
+        } else {
+            callback(false);
+        }
+        return await response.json(); 
+    } catch (error) {
+        callback(false);
+        return extractError(error, "Token verification failed.")
+    }
+  },
 };
 
 export const unitFormat = (roi: number, isPercent: boolean, allocatedCapital: number | Total) => {
